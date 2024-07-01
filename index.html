@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Color Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-LbMbdKZcizMNFHhZ2KHj/jMwZAoqoDvkNfQv2FymrB+3R4RRTQ0a7HLH2oK4ICvHZO5U1Hb6vN4rfB17C0P3LA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
+            padding: 0;
             background-color: #f0f0f0;
         }
         
@@ -21,10 +19,12 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
-            width: 300px;
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
         }
         
-        input[type="text"] {
+        input[type="text"], input[type="color"] {
             width: calc(100% - 20px);
             padding: 8px;
             margin-bottom: 10px;
@@ -39,6 +39,7 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
         
         button:hover {
@@ -52,21 +53,79 @@
             border: 2px solid #ccc;
             border-radius: 4px;
         }
+
+        .article-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .article {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: left;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .article h2 {
+            margin-top: 0;
+            color: #007bff;
+        }
+
+        .article p {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Color Generator</h1>
+        <h1><i class="fas fa-balance-scale"></i> Color Generator</h1>
+        <input type="color" id="colorPicker" value="#ff0000">
         <input type="text" id="colorInput" placeholder="Enter RGB Color (e.g., 120, 50, 210)">
         <button onclick="generateOppositeColor()">Generate Opposite Color</button>
         <div id="oppositeColor" class="color-box"></div>
     </div>
 
+    <div class="article-container">
+        <div class="article">
+            <h2>What is contrast color ?
+
+            </h2>Color contrast is about how one color stands out from another color. It’s especially important to consider the color difference between text and the background, and between sections depicting meaning such as pie charts, maps, etc.</p>
+            
+        </div>
+
+        <div class="article">
+            <h2>Best practices</h2>
+            <p>Use a contrast checking tool. Visit the color contrast tools page for more information.
+                Choose a color scheme that provides high contrast between the text and the background. If you have a dark background, the text should be light, and vice versa. (Black and white provide maximum contrast.)
+                Avoid the following color combinations:
+                Green and red (or related colors)
+                Blue and yellow (or related colors)
+                Use larger text and simple (not ornate) fonts. Sans serif fonts are preferable.
+                Don’t rely on color as the sole means of conveying information. For example, don’t use color as your only method of indicating heading levels.
+                Use bold instead of color for emphasis.
+                Text can be difficult to read on photographic or gradient backgrounds. Set text against a solid background when possible.</p>
+        </div>
+    </div>
+
     <script>
         function generateOppositeColor() {
-            const colorInput = document.getElementById('colorInput').value.trim();
-            const rgbComponents = colorInput.split(',').map(component => parseInt(component.trim()));
+            let colorInputValue = '';
 
+            if (document.getElementById('colorPicker').value) {
+                colorInputValue = document.getElementById('colorPicker').value;
+            } else {
+                colorInputValue = document.getElementById('colorInput').value.trim();
+            }
+
+            if (colorInputValue.startsWith('#')) {
+                colorInputValue = hexToRgb(colorInputValue);
+            }
+
+            const rgbComponents = colorInputValue.split(',').map(component => parseInt(component.trim()));
+            
             if (rgbComponents.length !== 3 || rgbComponents.some(component => isNaN(component) || component < 0 || component > 255)) {
                 alert('Please enter a valid RGB color (e.g., 120, 50, 210)');
                 return;
@@ -77,8 +136,18 @@
             const oppositeB = 255 - rgbComponents[2];
 
             const oppositeColor = `rgb(${oppositeR}, ${oppositeG}, ${oppositeB})`;
+
             const colorBox = document.getElementById('oppositeColor');
             colorBox.style.backgroundColor = oppositeColor;
+        }
+
+        function hexToRgb(hex) {
+            hex = hex.replace('#', '');
+            const bigint = parseInt(hex, 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+            return `${r}, ${g}, ${b}`;
         }
     </script>
 </body>
